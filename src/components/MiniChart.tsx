@@ -28,49 +28,125 @@ interface MiniChartProps {
 }
 
 const ChartContainer = styled.div`
-  width: 120px;
-  height: 50px;
+  width: 180px;
+  height: 60px;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
 
   @media (max-width: 768px) {
-    width: 80px;
+    width: 100px;
     height: 40px;
   }
 `;
 
 const MiniChart: React.FC<MiniChartProps> = ({ data, isPositive }) => {
+    const positiveColor = 'rgba(22, 199, 132, 1)';
+    const negativeColor = 'rgba(234, 57, 67, 1)';
+    const positiveGradient = 'rgba(22, 199, 132, 0.2)';
+    const negativeGradient = 'rgba(234, 57, 67, 0.2)';
+
+    // Ensure there's at least 7 data points for a smooth chart
+    const chartPoints = data.length >= 7 ? data : Array(7).fill(0).map((_, i) =>
+        i === 0 ? data[0] || 0 :
+            i === 6 ? data[data.length - 1] || 0 :
+                ((data[0] || 0) + ((data[data.length - 1] || 0) - (data[0] || 0)) * (i / 6)) +
+                (Math.random() - 0.5) * Math.abs((data[data.length - 1] || 0) - (data[0] || 0)) * 0.2
+    );
+
     const chartData = {
         labels: ['', '', '', '', '', '', ''], // Empty labels for 7 days
         datasets: [
             {
-                data: data,
-                borderColor: isPositive ? '#16c784' : '#ea3943',
+                data: chartPoints,
+                borderColor: isPositive ? positiveColor : negativeColor,
                 borderWidth: 2,
                 pointRadius: 0,
-                tension: 0.1,
-                fill: false,
+                pointHoverRadius: 4,
+                pointHoverBackgroundColor: isPositive ? positiveColor : negativeColor,
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                backgroundColor: (context: any) => {
+                    const ctx = context.chart.ctx;
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 60);
+                    if (isPositive) {
+                        gradient.addColorStop(0, positiveGradient);
+                        gradient.addColorStop(1, 'rgba(22, 199, 132, 0)');
+                    } else {
+                        gradient.addColorStop(0, negativeGradient);
+                        gradient.addColorStop(1, 'rgba(234, 57, 67, 0)');
+                    }
+                    return gradient;
+                },
             },
         ],
     };
 
+    // Calculate min/max values with padding
+    const minValue = Math.min(...chartPoints);
+    const maxValue = Math.max(...chartPoints);
+    const padding = (maxValue - minValue) * 0.2;
+
     const options: ChartOptions<'line'> = {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+        },
         plugins: {
             legend: {
                 display: false,
             },
             tooltip: {
-                enabled: false,
+                enabled: true,
+                backgroundColor: 'rgba(20, 30, 51, 0.9)',
+                titleFont: {
+                    family: 'Inter',
+                    size: 12,
+                },
+                bodyFont: {
+                    family: 'Inter',
+                    size: 12,
+                },
+                padding: 8,
+                cornerRadius: 4,
+                displayColors: false,
             },
         },
         scales: {
             x: {
                 display: false,
+                grid: {
+                    display: false,
+                }
             },
             y: {
                 display: false,
+                grid: {
+                    display: false,
+                },
+                // Add some padding to the chart for better visualization
+                min: minValue - padding,
+                max: maxValue + padding
             },
         },
+        interaction: {
+            intersect: false,
+            mode: 'index'
+        },
+        elements: {
+            line: {
+                cubicInterpolationMode: 'monotone',
+            }
+        }
     };
 
     return (

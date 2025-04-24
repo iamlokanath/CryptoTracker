@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CryptoTable from './components/CryptoTable';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import FilterBar from './components/FilterBar';
 import cryptoWebSocket from './services/cryptoWebSocket';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,20 +10,40 @@ import { selectAssets, setAssets, CryptoAsset } from './features/crypto/cryptoSl
 
 const AppContainer = styled.div`
   min-height: 100vh;
-  background-color: #f9fafb;
-  font-family: 'Arial', sans-serif;
+  background-color: var(--light-bg);
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 `;
 
 const Main = styled.main`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px 40px;
+  padding: 0 24px 60px;
+  width: 100%;
+  flex: 1;
 `;
 
 const Title = styled.h2`
-  color: #333;
-  margin-bottom: 20px;
+  color: var(--text-primary);
+  margin-bottom: 24px;
   font-weight: 700;
+  font-size: 28px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary-color), var(--success-color));
+    border-radius: 2px;
+  }
 `;
 
 function App() {
@@ -113,6 +134,7 @@ function App() {
         <FilterBar onFilter={handleFilter} onSearch={handleSearch} />
         <CryptoTable />
       </Main>
+      <Footer />
     </AppContainer>
   );
 }

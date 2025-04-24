@@ -2,27 +2,39 @@
 
 A responsive React + Redux Toolkit application that tracks real-time cryptocurrency prices using Binance WebSocket API and manages all state via Redux.
 
+![CryptoTracker Screenshot](screenshot.png)
+
 ## Features
 
-- Displays top 10 cryptocurrencies in a responsive table with real-time price updates
-- Live data from Binance WebSocket API
-- Shows key information: rank, name, price, percentage changes, market cap, volume, supply, and price charts
-- Color-coded percentage changes (green for positive, red for negative)
-- Sorting functionality for all columns
-- Filtering options for top gainers and losers
-- Search functionality to find specific cryptocurrencies
-- Persistent settings using localStorage (filter, sort, search preferences)
-- Comprehensive test suite for Redux reducers and selectors
+- **Real-time Data**: Displays top 10 cryptocurrencies with live price updates via Binance WebSocket API
+- **Interactive UI**: Responsive table with key information and interactive elements
+- **Dark/Light Mode**: Toggle between dark and light themes with smooth transitions
+- **Advanced Filtering**:
+  - Filter by top gainers and losers
+  - Search by cryptocurrency name or symbol
+  - Sort by any column (price, volume, market cap, etc.)
+- **Visual Elements**:
+  - Color-coded percentage changes
+  - Mini-charts showing 7-day price trends
+  - Custom hover effects for better UX
+- **Navigation Helpers**:
+  - Scroll-to-top button that appears when scrolling down
+  - Smooth scrolling animations
+- **Modern Footer**: Contact information, useful links, and social media icons
+- **Persistence**: User preferences saved to localStorage (theme, filters, sort preferences)
+- **Responsive Design**: Optimized for all screen sizes from mobile to desktop
 
 ## Technologies Used
 
-- React
-- TypeScript
-- Redux Toolkit for state management
-- WebSocket API for real-time data
-- Styled Components for styling
-- Chart.js and react-chartjs-2 for price charts
-- Jest for unit testing
+- **React 19** with Hooks for UI components
+- **TypeScript** for type safety
+- **Redux Toolkit** for state management
+- **WebSocket API** for real-time data streaming
+- **Styled Components** for styling with theme support
+- **Chart.js** and **react-chartjs-2** for interactive price charts
+- **Context API** for theme management
+- **LocalStorage** for persistent user preferences
+- **Jest** for unit testing
 
 ## Getting Started
 
@@ -56,19 +68,29 @@ npm test
 
 - `/src/app` - Redux store configuration
 - `/src/components` - React components
+- `/src/contexts` - Context providers (ThemeContext)
 - `/src/features` - Redux slices and tests
 - `/src/services` - WebSocket service
 - `/src/utils` - Utility functions
 
-## How It Works
-
-The application connects to Binance's WebSocket API to receive real-time cryptocurrency price updates. All state is managed through Redux, with the UI automatically reflecting these changes.
-
-User preferences for sorting, filtering, and search are saved to localStorage for persistence between sessions.
-
-The WebSocket connection includes automatic reconnection logic for resilience against network issues.
-
 ## Implementation Details
+
+### Theme System
+
+The application implements a complete theming system:
+
+- Theme toggle with sun/moon icons
+- Theme preference stored in localStorage
+- Automatic detection of system preference
+- CSS variables for consistent styling
+- Smooth transitions between themes
+
+### State Management Architecture
+
+- **Dual-state approach**: Original data and filtered view data
+- **Redux store**: Central state management
+- **Context API**: Theme management
+- **WebSocket integration**: Real-time updates to Redux state
 
 ### WebSocket Integration
 
@@ -76,13 +98,32 @@ The WebSocket connection includes automatic reconnection logic for resilience ag
 - Automatic reconnection with exponential backoff
 - Error handling and status reporting
 
-### State Management
+### UI Components
 
-- Redux store with proper slices for crypto data
-- Selectors for efficient state access
-- Action creators for all state modifications
+- **Header**: App logo, theme toggle, and connection status
+- **Filter Bar**: Category filters and search functionality
+- **Crypto Table**: Dynamic, sortable data presentation
+- **Mini Charts**: Interactive price trend visualization
+- **Footer**: Contact info, navigation links, social icons
+- **Scroll-to-Top**: Dynamic button for improved navigation
 
-### Testing
+## Future Enhancements
 
-- Unit tests for reducers and selectors
-- Component testing for key UI elements
+- Portfolio tracking functionality
+- Price alerts and notifications
+- Additional technical indicators
+- Historical data comparison
+- News integration from crypto-related sources
+
+## License
+
+MIT
+
+## Contributors
+
+- Lokanath Panda - Developer and Designer
+
+## Acknowledgments
+
+- Binance API for real-time cryptocurrency data
+- The React and Redux teams for their excellent libraries

@@ -80,8 +80,9 @@ const AssetCell = styled.div`
 `;
 
 const AssetLogo = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
 `;
 
 const AssetName = styled.div`

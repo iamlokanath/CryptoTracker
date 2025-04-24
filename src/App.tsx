@@ -7,7 +7,7 @@ import FilterBar from './components/FilterBar';
 import ScrollToTop from './components/ScrollToTop';
 import cryptoWebSocket from './services/cryptoWebSocket';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectOriginalAssets, setAssets } from './features/crypto/cryptoSlice';
+import { selectOriginalAssets, setAssets, sortAssetsByField } from './features/crypto/cryptoSlice';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -82,12 +82,41 @@ function App() {
     };
   }, []);
 
+  // Initialize app with saved filter and apply appropriate sorting
+  useEffect(() => {
+    // Apply sorting based on initial filter
+    if (filterType === 'gainers') {
+      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'desc' }));
+    } else if (filterType === 'losers') {
+      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'asc' }));
+    } else if (filterType === 'volume') {
+      dispatch(sortAssetsByField({ field: 'volume24h', direction: 'desc' }));
+    } else if (filterType === 'marketcap') {
+      dispatch(sortAssetsByField({ field: 'marketCap', direction: 'desc' }));
+    } else {
+      dispatch(sortAssetsByField({ field: 'rank', direction: 'asc' }));
+    }
+  }, [dispatch, filterType]);
+
   const handleFilter = (filter: string) => {
     setFilterType(filter);
     try {
       localStorage.setItem('cryptoFilter', filter);
     } catch (error) {
       console.error('Error saving filter preference:', error);
+    }
+
+    // Apply sorting based on filter type
+    if (filter === 'gainers') {
+      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'desc' }));
+    } else if (filter === 'losers') {
+      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'asc' }));
+    } else if (filter === 'volume') {
+      dispatch(sortAssetsByField({ field: 'volume24h', direction: 'desc' }));
+    } else if (filter === 'marketcap') {
+      dispatch(sortAssetsByField({ field: 'marketCap', direction: 'desc' }));
+    } else if (filter === 'all') {
+      dispatch(sortAssetsByField({ field: 'rank', direction: 'asc' }));
     }
   };
 
@@ -109,6 +138,12 @@ function App() {
       filteredAssets = filteredAssets.filter(asset => asset.priceChange24h > 0);
     } else if (filterType === 'losers') {
       filteredAssets = filteredAssets.filter(asset => asset.priceChange24h < 0);
+    } else if (filterType === 'volume') {
+      // For volume filter, we don't need to filter out assets
+      // but the sort action in FilterBar component already handles sorting by volume
+    } else if (filterType === 'marketcap') {
+      // For marketcap filter, we don't need to filter out assets
+      // but the sort action in FilterBar component already handles sorting by market cap
     }
 
     // Apply search term filter

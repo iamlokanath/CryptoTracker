@@ -9,6 +9,20 @@ const TOP_COINS = [
   'btc', 'eth', 'bnb', 'sol', 'xrp', 'ada', 'avax', 'doge', 'dot', 'shib'
 ];
 
+// Map of coin symbols to their logo image URLs
+const COIN_LOGOS: Record<string, string> = {
+  'BTC': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
+  'ETH': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
+  'BNB': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
+  'SOL': 'https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png',
+  'XRP': 'https://s2.coinmarketcap.com/static/img/coins/64x64/52.png',
+  'ADA': 'https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png',
+  'AVAX': 'https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png',
+  'DOGE': 'https://s2.coinmarketcap.com/static/img/coins/64x64/74.png',
+  'DOT': 'https://s2.coinmarketcap.com/static/img/coins/64x64/6636.png',
+  'SHIB': 'https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png'
+};
+
 interface BinanceTickerData {
   e: string;        // Event type
   E: number;        // Event time
@@ -96,20 +110,38 @@ class CryptoWebSocket {
       
       // Filter for our top coins
       const filteredData = data.filter(ticker => {
-        const symbol = ticker.s.toLowerCase();
-        return TOP_COINS.some(coin => symbol.includes(coin + 'usdt'));
+        // Make sure we're only dealing with USDT pairs
+        if (!ticker.s.endsWith('USDT')) return false;
+        
+        // Get just the base symbol by removing USDT
+        const baseSymbol = ticker.s.replace('USDT', '').toLowerCase();
+        
+        // Only include coins from our TOP_COINS array and using the primary symbol
+        // This ensures we get only one record per coin
+        return TOP_COINS.includes(baseSymbol);
       });
       
+      console.log(`Filtered coins: ${filteredData.map(t => t.s).join(', ')}`);
+      
       if (filteredData.length > 0) {
+        // Ensure we don't have duplicates and limit to TOP_COINS length
+        const uniqueSymbols = new Set();
+        const uniqueData = filteredData.filter(ticker => {
+          const baseSymbol = ticker.s.replace('USDT', '').toLowerCase();
+          if (uniqueSymbols.has(baseSymbol)) return false;
+          uniqueSymbols.add(baseSymbol);
+          return true;
+        }).slice(0, TOP_COINS.length);
+        
         // Transform Binance data to our app format
-        const assets: CryptoAsset[] = filteredData.map((ticker, index) => {
+        const assets: CryptoAsset[] = uniqueData.map((ticker, index) => {
           const symbol = ticker.s.replace('USDT', '');
           return {
             id: symbol.toLowerCase(),
             rank: index + 1,
             name: this.getFullNameFromSymbol(symbol),
             symbol: symbol,
-            logo: `https://cryptologos.cc/logos/${symbol.toLowerCase()}-${symbol.toLowerCase()}-logo.png`,
+            logo: COIN_LOGOS[symbol] || `https://s2.coinmarketcap.com/static/img/coins/64x64/1.png`,
             price: parseFloat(ticker.c),
             priceChange1h: parseFloat(ticker.P) / 3, // Approximation
             priceChange24h: parseFloat(ticker.P),
@@ -122,6 +154,7 @@ class CryptoWebSocket {
           };
         });
         
+        console.log(`Dispatching ${assets.length} assets`);
         store.dispatch(setAssets(assets));
       }
     } catch (error) {

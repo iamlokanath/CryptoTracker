@@ -2,7 +2,11 @@
 
 A responsive React + Redux Toolkit application that tracks real-time cryptocurrency prices using Binance WebSocket API and manages all state via Redux.
 
-![CryptoTracker Screenshot](screenshot.png)
+![CryptoTracker Screenshot](image.png)
+
+## Demo Video
+
+Check out the [demo video](https://drive.google.com/file/d/1EOgaN80iy91NhHcpHykcoDSBXrHV7q-I/view?usp=sharing) to see the application in action.
 
 ## Features
 

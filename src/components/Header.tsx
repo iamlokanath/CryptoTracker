@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import ThemeToggle from './ThemeToggle';
 
 const HeaderContainer = styled.header`
-  background: linear-gradient(to right, var(--dark-bg), #1a237e);
+  background: linear-gradient(to right, var(--footer-gradient-start), var(--footer-gradient-end));
   padding: 20px 0;
   margin-bottom: 30px;
   box-shadow: var(--shadow-md);
+  transition: background-color 0.3s ease;
 `;
 
 const HeaderContent = styled.div`
@@ -97,6 +99,12 @@ const StatusDot = styled.div<{ isConnected: boolean }>`
   }
 `;
 
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
 interface HeaderProps {
   isConnected: boolean;
 }
@@ -109,10 +117,13 @@ const Header: React.FC<HeaderProps> = ({ isConnected }) => {
           <LogoIcon>C</LogoIcon>
           <h1>Crypto<span>Tracker</span></h1>
         </Logo>
-        <ConnectionStatus isConnected={isConnected}>
-          <StatusDot isConnected={isConnected} />
-          {isConnected ? 'Live Updates' : 'Disconnected'}
-        </ConnectionStatus>
+        <HeaderRight>
+          <ThemeToggle />
+          <ConnectionStatus isConnected={isConnected}>
+            <StatusDot isConnected={isConnected} />
+            {isConnected ? 'Live Updates' : 'Disconnected'}
+          </ConnectionStatus>
+        </HeaderRight>
       </HeaderContent>
     </HeaderContainer>
   );

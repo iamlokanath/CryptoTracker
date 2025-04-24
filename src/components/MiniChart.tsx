@@ -107,7 +107,9 @@ const MiniChart: React.FC<MiniChartProps> = ({ data, isPositive }) => {
             },
             tooltip: {
                 enabled: true,
-                backgroundColor: 'rgba(20, 30, 51, 0.9)',
+                backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark'
+                    ? 'rgba(30, 41, 59, 0.9)'
+                    : 'rgba(20, 30, 51, 0.9)',
                 titleFont: {
                     family: 'Inter',
                     size: 12,
@@ -119,6 +121,8 @@ const MiniChart: React.FC<MiniChartProps> = ({ data, isPositive }) => {
                 padding: 8,
                 cornerRadius: 4,
                 displayColors: false,
+                titleColor: 'rgba(255, 255, 255, 0.9)',
+                bodyColor: 'rgba(255, 255, 255, 0.9)',
             },
         },
         scales: {
@@ -126,12 +130,14 @@ const MiniChart: React.FC<MiniChartProps> = ({ data, isPositive }) => {
                 display: false,
                 grid: {
                     display: false,
+                    color: 'var(--chart-grid)'
                 }
             },
             y: {
                 display: false,
                 grid: {
                     display: false,
+                    color: 'var(--chart-grid)'
                 },
                 // Add some padding to the chart for better visualization
                 min: minValue - padding,

@@ -119,10 +119,6 @@ The application implements a complete theming system:
 - Historical data comparison
 - News integration from crypto-related sources
 
-## License
-
-MIT
-
 ## Contributors
 
 - Lokanath Panda - Developer and Designer

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CryptoTable from './components/CryptoTable';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import FilterBar from './components/FilterBar';
 import cryptoWebSocket from './services/cryptoWebSocket';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,6 +14,7 @@ const AppContainer = styled.div`
   font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const Main = styled.main`
@@ -132,6 +134,7 @@ function App() {
         <FilterBar onFilter={handleFilter} onSearch={handleSearch} />
         <CryptoTable />
       </Main>
+      <Footer />
     </AppContainer>
   );
 }

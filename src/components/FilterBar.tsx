@@ -5,16 +5,24 @@ import { sortAssetsByField } from '../features/crypto/cryptoSlice';
 
 const FilterContainer = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
+  padding: 6px;
   background-color: var(--card-bg);
-  padding: 16px 20px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 12px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+    border-radius: var(--radius-lg);
+  }
 `;
 
 const FilterGroup = styled.div`
@@ -43,7 +51,7 @@ const FilterButton = styled.button<{ active: boolean }>`
   gap: 6px;
   
   &:hover {
-    background-color: ${props => props.active ? 'var(--primary-color)' : 'var(--primary-light)'};
+    background-color: ${props => props.active ? 'var(--primary-color)' : 'var(--hover-medium)'};
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
   }
@@ -85,120 +93,120 @@ const FilterButton = styled.button<{ active: boolean }>`
 `;
 
 const SearchInput = styled.input`
+  flex: 1;
+  min-width: 250px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
-  padding: 10px 16px 10px 40px;
-  font-size: 14px;
-  width: 280px;
-  outline: none;
+  padding: 12px 16px 12px 40px;
+  background-color: var(--light-bg);
+  color: var(--text-primary);
   transition: all 0.2s ease;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: 12px center;
   background-size: 20px;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   
   &:focus {
+    outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(56, 97, 251, 0.2);
   }
   
   &::placeholder {
-    color: var(--text-light);
-  }
-  
-  @media (max-width: 768px) {
-    width: 100%;
+    color: var(--text-secondary);
+    opacity: 0.7;
   }
 `;
 
 interface FilterBarProps {
-    onFilter: (filter: string) => void;
-    onSearch: (term: string) => void;
+  onFilter: (filter: string) => void;
+  onSearch: (term: string) => void;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({ onFilter, onSearch }) => {
-    const [activeFilter, setActiveFilter] = useState<string>(() => {
-        try {
-            return localStorage.getItem('cryptoFilter') || 'all';
-        } catch (error) {
-            return 'all';
-        }
-    });
+  const [activeFilter, setActiveFilter] = useState<string>(() => {
+    try {
+      return localStorage.getItem('cryptoFilter') || 'all';
+    } catch (error) {
+      return 'all';
+    }
+  });
 
-    const [searchTerm, setSearchTerm] = useState<string>(() => {
-        try {
-            return localStorage.getItem('cryptoSearch') || '';
-        } catch (error) {
-            return '';
-        }
-    });
+  const [searchTerm, setSearchTerm] = useState<string>(() => {
+    try {
+      return localStorage.getItem('cryptoSearch') || '';
+    } catch (error) {
+      return '';
+    }
+  });
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const handleFilterClick = (filter: string) => {
-        setActiveFilter(filter);
-        onFilter(filter);
+  const handleFilterClick = (filter: string) => {
+    setActiveFilter(filter);
+    onFilter(filter);
 
-        // Also sort by appropriate field based on filter
-        if (filter === 'gainers') {
-            dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'desc' }));
-        } else if (filter === 'losers') {
-            dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'asc' }));
-        } else if (filter === 'volume') {
-            dispatch(sortAssetsByField({ field: 'volume24h', direction: 'desc' }));
-        } else if (filter === 'marketcap') {
-            dispatch(sortAssetsByField({ field: 'marketCap', direction: 'desc' }));
-        }
-    };
+    // Also sort by appropriate field based on filter
+    if (filter === 'gainers') {
+      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'desc' }));
+    } else if (filter === 'losers') {
+      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'asc' }));
+    } else if (filter === 'volume') {
+      dispatch(sortAssetsByField({ field: 'volume24h', direction: 'desc' }));
+    } else if (filter === 'marketcap') {
+      dispatch(sortAssetsByField({ field: 'marketCap', direction: 'desc' }));
+    }
+  };
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-        onSearch(value);
-    };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    onSearch(value);
+  };
 
-    return (
-        <FilterContainer>
-            <FilterGroup>
-                <FilterButton
-                    active={activeFilter === 'all'}
-                    onClick={() => handleFilterClick('all')}
-                >
-                    All
-                </FilterButton>
-                <FilterButton
-                    active={activeFilter === 'gainers'}
-                    onClick={() => handleFilterClick('gainers')}
-                >
-                    Top Gainers
-                </FilterButton>
-                <FilterButton
-                    active={activeFilter === 'losers'}
-                    onClick={() => handleFilterClick('losers')}
-                >
-                    Top Losers
-                </FilterButton>
-                <FilterButton
-                    active={activeFilter === 'volume'}
-                    onClick={() => handleFilterClick('volume')}
-                >
-                    By Volume
-                </FilterButton>
-                <FilterButton
-                    active={activeFilter === 'marketcap'}
-                    onClick={() => handleFilterClick('marketcap')}
-                >
-                    By Market Cap
-                </FilterButton>
-            </FilterGroup>
-            <SearchInput
-                type="text"
-                placeholder="Search cryptocurrency..."
-                value={searchTerm}
-                onChange={handleSearch}
-            />
-        </FilterContainer>
-    );
+  return (
+    <FilterContainer>
+      <FilterGroup>
+        <FilterButton
+          active={activeFilter === 'all'}
+          onClick={() => handleFilterClick('all')}
+        >
+          All
+        </FilterButton>
+        <FilterButton
+          active={activeFilter === 'gainers'}
+          onClick={() => handleFilterClick('gainers')}
+        >
+          Top Gainers
+        </FilterButton>
+        <FilterButton
+          active={activeFilter === 'losers'}
+          onClick={() => handleFilterClick('losers')}
+        >
+          Top Losers
+        </FilterButton>
+        <FilterButton
+          active={activeFilter === 'volume'}
+          onClick={() => handleFilterClick('volume')}
+        >
+          By Volume
+        </FilterButton>
+        <FilterButton
+          active={activeFilter === 'marketcap'}
+          onClick={() => handleFilterClick('marketcap')}
+        >
+          By Market Cap
+        </FilterButton>
+      </FilterGroup>
+      <SearchInput
+        type="text"
+        placeholder="Search cryptocurrency..."
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+    </FilterContainer>
+  );
 };
 
 export default FilterBar; 

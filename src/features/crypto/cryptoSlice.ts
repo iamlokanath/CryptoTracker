@@ -23,6 +23,7 @@ export interface CryptoAsset {
 
 export interface CryptoState {
   assets: CryptoAsset[];
+  originalAssets: CryptoAsset[];
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
   sortField: SortField;
@@ -49,6 +50,88 @@ const { field: savedSortField, direction: savedSortDirection } = getSavedSortPre
 // Sample initial data
 const initialState: CryptoState = {
   assets: [
+    {
+      id: 'bitcoin',
+      rank: 1,
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png',
+      price: 65432.12,
+      priceChange1h: 0.5,
+      priceChange24h: 1.2,
+      priceChange7d: -2.3,
+      marketCap: 1236789456123,
+      volume24h: 32165498712,
+      circulatingSupply: 19456789,
+      maxSupply: 21000000,
+      chartData: [45000, 46000, 47500, 48200, 47800, 49100, 50200],
+    },
+    {
+      id: 'ethereum',
+      rank: 2,
+      name: 'Ethereum',
+      symbol: 'ETH',
+      logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
+      price: 3456.78,
+      priceChange1h: -0.2,
+      priceChange24h: 2.1,
+      priceChange7d: 5.4,
+      marketCap: 412365897123,
+      volume24h: 15698732456,
+      circulatingSupply: 120654789,
+      maxSupply: null,
+      chartData: [3200, 3150, 3300, 3400, 3380, 3450, 3500],
+    },
+    {
+      id: 'tether',
+      rank: 3,
+      name: 'Tether',
+      symbol: 'USDT',
+      logo: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
+      price: 1.0,
+      priceChange1h: 0.01,
+      priceChange24h: -0.01,
+      priceChange7d: 0.02,
+      marketCap: 83654123789,
+      volume24h: 65432178965,
+      circulatingSupply: 83654123789,
+      maxSupply: null,
+      chartData: [1.0, 1.0, 0.999, 1.001, 1.0, 1.0, 0.998],
+    },
+    {
+      id: 'binancecoin',
+      rank: 4,
+      name: 'Binance Coin',
+      symbol: 'BNB',
+      logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png',
+      price: 567.89,
+      priceChange1h: 0.3,
+      priceChange24h: -1.5,
+      priceChange7d: -0.8,
+      marketCap: 87654321098,
+      volume24h: 2345678901,
+      circulatingSupply: 165432198,
+      maxSupply: 200000000,
+      chartData: [540, 545, 555, 560, 570, 565, 550],
+    },
+    {
+      id: 'solana',
+      rank: 5,
+      name: 'Solana',
+      symbol: 'SOL',
+      logo: 'https://cryptologos.cc/logos/solana-sol-logo.png',
+      price: 123.45,
+      priceChange1h: 1.2,
+      priceChange24h: 3.5,
+      priceChange7d: 10.2,
+      marketCap: 43215678901,
+      volume24h: 3456789012,
+      circulatingSupply: 350123456,
+      maxSupply: null,
+      chartData: [100, 105, 110, 108, 115, 120, 125],
+    },
+  ],
+  originalAssets: [
     {
       id: 'bitcoin',
       rank: 1,
@@ -196,6 +279,10 @@ export const cryptoSlice = createSlice({
     setAssets: (state, action: PayloadAction<CryptoAsset[]>) => {
       state.assets = action.payload;
     },
+    setOriginalAssets: (state, action: PayloadAction<CryptoAsset[]>) => {
+      state.originalAssets = action.payload;
+      state.assets = action.payload;
+    },
     setStatus: (state, action: PayloadAction<'idle' | 'loading' | 'failed'>) => {
       state.status = action.payload;
     },
@@ -232,7 +319,8 @@ export const cryptoSlice = createSlice({
 
 export const { 
   updatePrices, 
-  setAssets, 
+  setAssets,
+  setOriginalAssets,
   setStatus, 
   setError,
   sortAssetsByField 
@@ -240,6 +328,7 @@ export const {
 
 // Selectors
 export const selectAssets = (state: RootState) => state.crypto.assets;
+export const selectOriginalAssets = (state: RootState) => state.crypto.originalAssets;
 export const selectStatus = (state: RootState) => state.crypto.status;
 export const selectError = (state: RootState) => state.crypto.error;
 export const selectSortField = (state: RootState) => state.crypto.sortField;

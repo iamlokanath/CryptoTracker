@@ -20,6 +20,7 @@ const TableContainer = styled.div`
   box-shadow: var(--shadow-md);
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 `;
 
 const Table = styled.table`
@@ -30,6 +31,7 @@ const Table = styled.table`
   font-family: 'Inter', sans-serif;
   text-align: right;
   table-layout: fixed; /* Fixed layout for better column width control */
+  transition: color 0.3s ease;
 `;
 
 const TableHead = styled.thead`
@@ -46,6 +48,7 @@ const TableHead = styled.thead`
     top: 0;
     background-color: var(--light-bg);
     z-index: 10;
+    transition: background-color 0.3s ease, color 0.3s ease;
     
     /* Optimize column widths */
     &:nth-child(1) { width: 4%; } /* # */
@@ -77,10 +80,10 @@ const TableHead = styled.thead`
 const TableBody = styled.tbody`
   tr {
     border-bottom: 1px solid var(--border-color);
-    transition: all 0.2s ease;
+    transition: all 0.2s ease, background-color 0.3s ease;
     
     &:hover {
-      background-color: var(--primary-light);
+      background-color: var(--hover-light);
       transform: translateY(-2px);
       box-shadow: var(--shadow-sm);
     }
@@ -102,6 +105,7 @@ const TableBody = styled.tbody`
     padding: 16px;
     font-size: 14px;
     vertical-align: middle;
+    transition: color 0.3s ease;
     
     &:first-child {
       text-align: center;
@@ -207,7 +211,7 @@ const SortableHeader = styled.th<{ isActive: boolean }>`
   transition: all 0.2s ease;
   
   &:hover {
-    background-color: var(--primary-light);
+    background-color: var(--hover-medium);
     color: var(--primary-color);
   }
   

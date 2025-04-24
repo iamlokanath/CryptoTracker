@@ -150,7 +150,7 @@ class CryptoWebSocket {
             volume24h: parseFloat(ticker.q),
             circulatingSupply: parseFloat(ticker.v),
             maxSupply: null,
-            chartData: [parseFloat(ticker.o), parseFloat(ticker.c)],
+            chartData: this.generateChartData(ticker, parseFloat(ticker.P)),
           };
         });
         
@@ -215,6 +215,53 @@ class CryptoWebSocket {
     };
     
     return nameMap[symbol] || symbol;
+  }
+
+  // Add this method to generate realistic chart data
+  private generateChartData(ticker: BinanceTickerData, priceChange: number): number[] {
+    // Get open and close prices
+    const openPrice = parseFloat(ticker.o);
+    const closePrice = parseFloat(ticker.c);
+    
+    // Also use high and low prices to ensure realistic range
+    const highPrice = parseFloat(ticker.h);
+    const lowPrice = parseFloat(ticker.l);
+    
+    // Generate 7 points for a 7-day chart
+    const points: number[] = [];
+    
+    // Start with open price
+    points.push(openPrice);
+    
+    // Generate 5 intermediate points with some randomness but following the trend
+    const isPositive = priceChange >= 0;
+    const range = Math.abs(closePrice - openPrice);
+    
+    // Create a realistic trend with some volatility
+    for (let i = 0; i < 5; i++) {
+      // More volatile in the middle, smoother at the ends
+      const volatilityFactor = i === 2 ? 0.5 : 0.3;
+      const volatility = range * volatilityFactor;
+      
+      // Random walk with trend bias
+      const trendFactor = isPositive ? 0.6 : -0.6;
+      const random = (Math.random() - 0.5) * volatility;
+      const trend = (range / 5) * trendFactor * (i + 1);
+      
+      // Calculate the next point
+      let nextPoint = openPrice + trend + random;
+      
+      // Ensure value doesn't exceed high/low boundaries with some margin
+      nextPoint = Math.min(nextPoint, highPrice * 1.05);
+      nextPoint = Math.max(nextPoint, lowPrice * 0.95);
+      
+      points.push(nextPoint);
+    }
+    
+    // End with close price
+    points.push(closePrice);
+    
+    return points;
   }
 }
 

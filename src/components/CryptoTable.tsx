@@ -24,10 +24,12 @@ const TableContainer = styled.div`
 
 const Table = styled.table`
   width: 100%;
+  min-width: 1300px; /* Ensure min-width for laptop screens */
   border-collapse: separate;
   border-spacing: 0;
   font-family: 'Inter', sans-serif;
   text-align: right;
+  table-layout: fixed; /* Fixed layout for better column width control */
 `;
 
 const TableHead = styled.thead`
@@ -44,6 +46,18 @@ const TableHead = styled.thead`
     top: 0;
     background-color: var(--light-bg);
     z-index: 10;
+    
+    /* Optimize column widths */
+    &:nth-child(1) { width: 4%; } /* # */
+    &:nth-child(2) { width: 16%; } /* Name */
+    &:nth-child(3) { width: 8%; } /* Price */
+    &:nth-child(4) { width: 6%; } /* 1h % */
+    &:nth-child(5) { width: 6%; } /* 24h % */
+    &:nth-child(6) { width: 6%; } /* 7d % */
+    &:nth-child(7) { width: 12%; } /* Market Cap */
+    &:nth-child(8) { width: 10%; } /* 24h Volume */
+    &:nth-child(9) { width: 14%; } /* Circulating Supply */
+    &:nth-child(10) { width: 18%; } /* Last 7 Days */
     
     &:first-child {
       text-align: center;

@@ -146,17 +146,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilter, onSearch }) => {
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
     onFilter(filter);
-
-    // Also sort by appropriate field based on filter
-    if (filter === 'gainers') {
-      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'desc' }));
-    } else if (filter === 'losers') {
-      dispatch(sortAssetsByField({ field: 'priceChange24h', direction: 'asc' }));
-    } else if (filter === 'volume') {
-      dispatch(sortAssetsByField({ field: 'volume24h', direction: 'desc' }));
-    } else if (filter === 'marketcap') {
-      dispatch(sortAssetsByField({ field: 'marketCap', direction: 'desc' }));
-    }
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

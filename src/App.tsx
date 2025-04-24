@@ -4,6 +4,7 @@ import CryptoTable from './components/CryptoTable';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import FilterBar from './components/FilterBar';
+import ScrollToTop from './components/ScrollToTop';
 import cryptoWebSocket from './services/cryptoWebSocket';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectOriginalAssets, setAssets } from './features/crypto/cryptoSlice';
@@ -101,37 +102,25 @@ function App() {
 
   // Filter assets based on filter type and search term
   useEffect(() => {
-    console.log('Filter/search triggered with:', { filterType, searchTerm });
-    console.log('Original assets count:', originalAssets.length);
-
     let filteredAssets = [...originalAssets];
 
     // Apply filter based on type
     if (filterType === 'gainers') {
       filteredAssets = filteredAssets.filter(asset => asset.priceChange24h > 0);
-      console.log('After gainers filter:', filteredAssets.length);
     } else if (filterType === 'losers') {
       filteredAssets = filteredAssets.filter(asset => asset.priceChange24h < 0);
-      console.log('After losers filter:', filteredAssets.length);
     }
 
     // Apply search term filter
-    if (searchTerm && searchTerm.trim() !== '') {
-      const lowerSearchTerm = searchTerm.toLowerCase().trim();
-      console.log('Searching for term:', lowerSearchTerm);
-
-      filteredAssets = filteredAssets.filter(asset => {
-        const nameMatch = asset.name.toLowerCase().includes(lowerSearchTerm);
-        const symbolMatch = asset.symbol.toLowerCase().includes(lowerSearchTerm);
-        console.log(`Asset ${asset.symbol}: name match = ${nameMatch}, symbol match = ${symbolMatch}`);
-        return nameMatch || symbolMatch;
-      });
-
-      console.log('After search filter:', filteredAssets.length);
+    if (searchTerm) {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      filteredAssets = filteredAssets.filter(asset =>
+        asset.name.toLowerCase().includes(lowerSearchTerm) ||
+        asset.symbol.toLowerCase().includes(lowerSearchTerm)
+      );
     }
 
     // Update the filtered assets
-    console.log('Dispatching filtered assets:', filteredAssets.length);
     dispatch(setAssets(filteredAssets));
   }, [filterType, searchTerm, originalAssets, dispatch]);
 
@@ -144,6 +133,7 @@ function App() {
         <CryptoTable />
       </Main>
       <Footer />
+      <ScrollToTop />
     </AppContainer>
   );
 }

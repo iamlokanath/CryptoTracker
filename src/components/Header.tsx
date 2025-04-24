@@ -40,19 +40,19 @@ const Logo = styled.div`
   }
 `;
 
-const LogoIcon = styled.div`
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, var(--success-color), #16c7c7);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: bold;
-  font-size: 20px;
-  box-shadow: 0 4px 12px rgba(22, 199, 132, 0.3);
-`;
+// const LogoIcon = styled.div`
+//   width: 40px;
+//   height: 40px;
+//   background: linear-gradient(135deg, var(--success-color), #16c7c7);
+//   border-radius: 12px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   color: #fff;
+//   font-weight: bold;
+//   font-size: 20px;
+//   box-shadow: 0 4px 12px rgba(22, 199, 132, 0.3);
+// `;
 
 const ConnectionStatus = styled.div<{ isConnected: boolean }>`
   display: flex;
@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ isConnected }) => {
     <HeaderContainer>
       <HeaderContent>
         <Logo>
-          <LogoIcon>C</LogoIcon>
+          {/* <LogoIcon>C</LogoIcon> */}
           <h1>Crypto<span>Tracker</span></h1>
         </Logo>
         <HeaderRight>

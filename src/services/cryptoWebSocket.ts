@@ -1,4 +1,4 @@
-import { setOriginalAssets, setStatus, setError, CryptoAsset } from '../features/crypto/cryptoSlice';
+import { setAssets, setStatus, setError, CryptoAsset } from '../features/crypto/cryptoSlice';
 // updatePrices,
 
 import { store } from '../app/store';
@@ -157,7 +157,7 @@ class CryptoWebSocket {
         });
         
         console.log(`Dispatching ${assets.length} assets`);
-        store.dispatch(setOriginalAssets(assets));
+        store.dispatch(setAssets(assets));
       }
     } catch (error) {
       console.error('Error processing WebSocket data:', error);

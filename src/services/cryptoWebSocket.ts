@@ -1,4 +1,6 @@
-import { updatePrices, setAssets, setStatus, setError, CryptoAsset } from '../features/crypto/cryptoSlice';
+import { setOriginalAssets, setStatus, setError, CryptoAsset } from '../features/crypto/cryptoSlice';
+// updatePrices,
+
 import { store } from '../app/store';
 
 // Binance WebSocket URL for price ticker
@@ -155,7 +157,7 @@ class CryptoWebSocket {
         });
         
         console.log(`Dispatching ${assets.length} assets`);
-        store.dispatch(setAssets(assets));
+        store.dispatch(setOriginalAssets(assets));
       }
     } catch (error) {
       console.error('Error processing WebSocket data:', error);

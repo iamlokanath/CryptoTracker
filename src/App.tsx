@@ -6,7 +6,7 @@ import Footer from './components/Footer';
 import FilterBar from './components/FilterBar';
 import cryptoWebSocket from './services/cryptoWebSocket';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectAssets, setAssets, CryptoAsset } from './features/crypto/cryptoSlice';
+import { selectOriginalAssets, setAssets } from './features/crypto/cryptoSlice';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -66,7 +66,7 @@ function App() {
       return '';
     }
   });
-  const assets = useSelector(selectAssets);
+  const originalAssets = useSelector(selectOriginalAssets);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -101,30 +101,39 @@ function App() {
 
   // Filter assets based on filter type and search term
   useEffect(() => {
-    const originalAssets = assets;
+    console.log('Filter/search triggered with:', { filterType, searchTerm });
+    console.log('Original assets count:', originalAssets.length);
+
     let filteredAssets = [...originalAssets];
 
     // Apply filter based on type
     if (filterType === 'gainers') {
       filteredAssets = filteredAssets.filter(asset => asset.priceChange24h > 0);
+      console.log('After gainers filter:', filteredAssets.length);
     } else if (filterType === 'losers') {
       filteredAssets = filteredAssets.filter(asset => asset.priceChange24h < 0);
+      console.log('After losers filter:', filteredAssets.length);
     }
 
     // Apply search term filter
-    if (searchTerm) {
-      const lowerSearchTerm = searchTerm.toLowerCase();
-      filteredAssets = filteredAssets.filter(asset =>
-        asset.name.toLowerCase().includes(lowerSearchTerm) ||
-        asset.symbol.toLowerCase().includes(lowerSearchTerm)
-      );
+    if (searchTerm && searchTerm.trim() !== '') {
+      const lowerSearchTerm = searchTerm.toLowerCase().trim();
+      console.log('Searching for term:', lowerSearchTerm);
+
+      filteredAssets = filteredAssets.filter(asset => {
+        const nameMatch = asset.name.toLowerCase().includes(lowerSearchTerm);
+        const symbolMatch = asset.symbol.toLowerCase().includes(lowerSearchTerm);
+        console.log(`Asset ${asset.symbol}: name match = ${nameMatch}, symbol match = ${symbolMatch}`);
+        return nameMatch || symbolMatch;
+      });
+
+      console.log('After search filter:', filteredAssets.length);
     }
 
-    // Only update the state if the filters are active
-    if (filterType !== 'all' || searchTerm) {
-      dispatch(setAssets(filteredAssets));
-    }
-  }, [filterType, searchTerm, dispatch]);
+    // Update the filtered assets
+    console.log('Dispatching filtered assets:', filteredAssets.length);
+    dispatch(setAssets(filteredAssets));
+  }, [filterType, searchTerm, originalAssets, dispatch]);
 
   return (
     <AppContainer>
